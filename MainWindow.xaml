@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SharpLoops"
         mc:Ignorable="d"
         Title="SharpLoops" Height="450" Width="800" Background="#FF5A2873">
-    <Grid Width="600" Height="200">
+    <Grid Width="400" Height="200">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
@@ -22,59 +22,59 @@
         <Label Grid.Row="0" Foreground="White">Kick</Label>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" >
-            <ToggleButton Name="buttonA01" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA02" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA03" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA04" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA05" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA06" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA07" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonA08" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
+            <ToggleButton Name="buttonA01" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA02" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA03" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA04" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA05" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA06" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA07" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonA08" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
         </StackPanel>
 
         <Label Grid.Row="1" Foreground="White">Snare</Label>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" >
-            <ToggleButton Name="buttonB01" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB02" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB03" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB04" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB05" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB06" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB07" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonB08" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
+            <ToggleButton Name="buttonB01" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB02" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB03" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB04" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB05" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB06" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB07" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonB08" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
         </StackPanel>
 
         <Label Grid.Row="2" Foreground="White">Hihat</Label>
         
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" >
-            <ToggleButton Name="buttonC01" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC02" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC03" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC04" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC05" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC06" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC07" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonC08" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
+            <ToggleButton Name="buttonC01" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC02" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC03" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC04" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC05" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC06" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC07" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonC08" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
         </StackPanel>
 
         <Label Grid.Row="3" Foreground="White">Crash</Label>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" >
-            <ToggleButton Name="buttonD01" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD02" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD03" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD04" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD05" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD06" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD07" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
-            <ToggleButton Name="buttonD08" Width="30" Margin="2" Background="LightGreen" Click="clickButton"></ToggleButton>
+            <ToggleButton Name="buttonD01" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD02" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD03" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD04" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD05" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD06" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD07" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
+            <ToggleButton Name="buttonD08" Width="30" Margin="2" Background="LightGreen" Click="ButtonClick"></ToggleButton>
         </StackPanel>
 
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Height="30">
-            <Button Name="buttonPlay" Width="50" Margin="5">Play</Button>
-            <Button Name="buttonStop" Width="50" Margin="5">Stop</Button>
-            <Button Name="buttonTest" Width="50" Margin="5">Test</Button>
+            <Button Name="buttonPlay" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="PlayButtonClick">Play</Button>
+            <Button Name="buttonStop" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White">Stop</Button>
+            <Button Name="buttonTest" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White">Test</Button>
         </StackPanel>
     </Grid>
 </Window>
