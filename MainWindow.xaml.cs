@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SharpLoops.Audio;
+using System.IO;
 
 namespace SharpLoops
 {
@@ -41,23 +42,20 @@ namespace SharpLoops
         private CachedSound _sound3;
         private CachedSound _sound4;
 
-        MixingWaveProvider32 _mixer;
-        DirectSoundOut _soundOutput;
-
-        WaveOutEvent _waveOutEvent;
-
-
-        private int[,] Pattern { get; set; }
-
-
-        private System.Timers.Timer aTimer;
-        private int pos = 0;
-        private bool[] state = new bool[8];
-
-
+        private System.Timers.Timer Clock;
 
         public MainWindow()
         {
+            // init values
+            PatternPosition = 0;
+
+            // start the clock
+            Clock = new System.Timers.Timer(200);
+            Clock.Elapsed += MoveLocatorToNextPos!;
+            Clock.AutoReset = true;
+            Clock.Enabled = true;
+
+            // clear the pattern
             Pattern = new int[,]
             { 
                 { 0,0,0,0,0,0,0,0},
@@ -66,81 +64,125 @@ namespace SharpLoops
                 { 0,0,0,0,0,0,0,0} 
             };
 
+            // cache the drum samples
             _sound1 = new CachedSound(PATH_KICK1);
             _sound2 = new CachedSound(PATH_SNARE1);
             _sound3 = new CachedSound(PATH_HAT1);
             _sound4 = new CachedSound(PATH_CRASH1);
 
-            SetTimer();
             InitializeComponent();
         }
 
-
-
-
-
-        private void SetTimer()        
-        {
-            aTimer = new System.Timers.Timer(100);
-            aTimer.Elapsed += OnTimedEvent!;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
+        public int[,] Pattern 
+        { 
+            get; 
+            set; 
+        }
+        public int PatternPosition 
+        { 
+            get; 
+            private set; 
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        /// <summary>
+        /// Total number of sample tracks.
+        /// </summary>
+        public int TotalChannels
         {
-            if (pos < 8)
+            get { return Pattern.GetLength(0); }
+        }
+
+        /// <summary>
+        /// Total number of track steps.
+        /// </summary>
+        public int TotalSteps
+        {
+            get { return Pattern.GetLength(1); }
+        }
+
+
+        private void MoveLocatorToNextPos(Object source, ElapsedEventArgs e)
+        {
+            if (PatternPosition < 7)
             {
-                pos++;
+                PatternPosition++;
             }
             else
             {
-                pos = 1;
+                PatternPosition = 0;
             }
 
-            string n = "buttonB0" + pos;
+            //string n = "buttonB0" + PatternPosition;
 
-            PaintButton(pos);
+            if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
+            if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
+            if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
+            if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+
+
+            MarkLocator(PatternPosition);
         }
 
-        private bool PaintButton(int pos)
+        private bool MarkLocator(int pos)
         {
+            // source: https://mycsharp.de/forum/threads/33113/faq-controls-von-thread-aktualisieren-lassen-control-invoke-dispatcher-invoke
             if (!this.Dispatcher.CheckAccess())
             { // Wenn Invoke nötig ist, ...
               // dann rufen wir die Methode selbst per Invoke auf
-                return (bool)this.Dispatcher.Invoke((Func<int, bool>)PaintButton, pos);
+                return (bool)this.Dispatcher.Invoke((Func<int, bool>)MarkLocator, pos);
                 // hier ist immer ein return (oder alternativ ein else) erforderlich.
                 // Es verhindert, dass der folgende Code im Worker-Thread ausgeführt wird.
             }
             // eigentliche Zugriffe; laufen jetzt auf jeden Fall im GUI-Thread
             //progressBar.Value = percent; // schreibender Zugriff
 
-            for (int i = 1; i < 9; i++)
+            for (int i = 0; i < 8; i++)
             {
-                ToggleButton d = (ToggleButton)this.FindName("buttonB0"+i);
+                Label lbl = (Label)this.FindName("label_00_0"+i);
 
                 if (i == pos)
                 {
-                    d.Background = new SolidColorBrush(Colors.White);
+                    lbl.Background = new SolidColorBrush(Colors.White);
                 }
                 else
                 {
-                    d.Background = new SolidColorBrush(Colors.Blue);
+                    lbl.Background = new SolidColorBrush(Colors.Blue);
                 }
             }
-
             return true; // lesender Zugriff
         }
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
-            Button c = (Button)this.FindName("buttonStop");
+            Button btn = (Button)sender;
 
-            c.Background = new SolidColorBrush(Colors.White);
+            if (btn != null)
+            {
+                string[] split = btn.Name.Split('_');
 
+                int row = Convert.ToInt32(split[1]);
+                int col = Convert.ToInt32(split[2]);
 
-            Thread thread = new Thread(new ThreadStart(PlayMultiSounds));
-            thread.Start();
+                // toggle the value
+                if (Pattern[row, col] == 0)
+                {
+                    Pattern[row, col] = 127;
+                    btn.Background = new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    Pattern[row, col] = 0;
+                    btn.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+            #region stuff
+            //Button c = (Button)this.FindName("buttonStop");
+
+            //c.Background = new SolidColorBrush(Colors.White);
+
+            //Thread thread = new Thread(new ThreadStart(PlayMultiSounds));
+            //thread.Start();
+            #endregion
         }
 
 
