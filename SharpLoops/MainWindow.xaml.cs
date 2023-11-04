@@ -1,26 +1,10 @@
-﻿using NAudio.Mixer;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Printing;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
+using System.ComponentModel;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SharpLoops.Audio;
-using System.IO;
 
 namespace SharpLoops
 {
@@ -50,7 +34,7 @@ namespace SharpLoops
             PatternPosition = 0;
 
             // start the clock
-            Clock = new System.Timers.Timer(200);
+            Clock = new System.Timers.Timer(500);
             Clock.Elapsed += MoveLocatorToNextPos!;
             Clock.AutoReset = true;
             Clock.Enabled = true;
@@ -114,14 +98,31 @@ namespace SharpLoops
 
             //string n = "buttonB0" + PatternPosition;
 
-            if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
-            if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
-            if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
-            if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerAsync(PatternPosition);
+
+
 
 
             MarkLocator(PatternPosition);
         }
+
+
+        void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int pos = (int)e.Argument;
+
+            if (Pattern[0, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
+            if (Pattern[1, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
+            if (Pattern[2, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
+            if (Pattern[3, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+        }
+
+
+
 
         private bool MarkLocator(int pos)
         {
@@ -129,6 +130,9 @@ namespace SharpLoops
             if (!this.Dispatcher.CheckAccess())
             { // Wenn Invoke nötig ist, ...
               // dann rufen wir die Methode selbst per Invoke auf
+
+                Console.WriteLine("bla");
+
                 return (bool)this.Dispatcher.Invoke((Func<int, bool>)MarkLocator, pos);
                 // hier ist immer ein return (oder alternativ ein else) erforderlich.
                 // Es verhindert, dass der folgende Code im Worker-Thread ausgeführt wird.

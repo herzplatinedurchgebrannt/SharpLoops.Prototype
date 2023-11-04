@@ -33,7 +33,20 @@ namespace SharpLoops.AudioPlayground
             //var boom = new CachedSound(PATH_SNARE1);
 
             // later in the app...
-            AudioPlaybackEngine.Instance.PlaySound(zap);
+
+            while (true)
+            {
+                AudioPlaybackEngine.Instance.PlaySound(zap);
+                Thread.Sleep(200);
+            }
+
+
+            
+
+
+
+
+
             //AudioPlaybackEngine.Instance.PlaySound(boom);
             AudioPlaybackEngine.Instance.PlaySound(PATH_HAT1);
 
