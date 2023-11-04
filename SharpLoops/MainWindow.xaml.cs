@@ -1,9 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using NAudio.Gui;
+using NAudio.Wave;
 using SharpLoops.Audio;
 
 namespace SharpLoops
@@ -26,18 +30,21 @@ namespace SharpLoops
         private CachedSound _sound3;
         private CachedSound _sound4;
 
-        private System.Timers.Timer Clock;
+        //private System.Timers.Timer Clock;
+        private Stopwatch _stopwatch;
 
         public MainWindow()
         {
             // init values
             PatternPosition = 0;
 
+            _stopwatch = new Stopwatch();
+
             // start the clock
-            Clock = new System.Timers.Timer(500);
-            Clock.Elapsed += MoveLocatorToNextPos!;
-            Clock.AutoReset = true;
-            Clock.Enabled = true;
+            //Clock = new System.Timers.Timer(500);
+            //Clock.Elapsed += MoveLocatorToNextPos!;
+            //Clock.AutoReset = true;
+            //Clock.Enabled = true;
 
             // clear the pattern
             Pattern = new int[,]
@@ -53,6 +60,12 @@ namespace SharpLoops
             _sound2 = new CachedSound(PATH_SNARE1);
             _sound3 = new CachedSound(PATH_HAT1);
             _sound4 = new CachedSound(PATH_CRASH1);
+
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerAsync(PatternPosition);
 
             InitializeComponent();
         }
@@ -87,6 +100,7 @@ namespace SharpLoops
 
         private void MoveLocatorToNextPos(Object source, ElapsedEventArgs e)
         {
+
             if (PatternPosition < 7)
             {
                 PatternPosition++;
@@ -99,26 +113,44 @@ namespace SharpLoops
             //string n = "buttonB0" + PatternPosition;
 
 
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerAsync(PatternPosition);
 
 
 
 
-            MarkLocator(PatternPosition);
+            
         }
 
 
         void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            int pos = (int)e.Argument;
+            _stopwatch.Start();
 
-            if (Pattern[0, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
-            if (Pattern[1, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
-            if (Pattern[2, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
-            if (Pattern[3, pos] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+            while(true)
+            {
+
+                if (_stopwatch.ElapsedMilliseconds > 200) 
+                {
+                    if (PatternPosition < 7)
+                    {
+                        PatternPosition++;
+                    }
+                    else
+                    {
+                        PatternPosition = 0;
+                    }
+
+                    MarkLocator(PatternPosition);
+
+                    if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
+                    if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
+                    if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
+                    if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+
+                    _stopwatch.Restart();
+                }
+
+
+            }
         }
 
 

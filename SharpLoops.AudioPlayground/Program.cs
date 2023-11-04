@@ -17,18 +17,21 @@ namespace SharpLoops.AudioPlayground
         {
 
 
-        //using (var audioFile = new AudioFileReader(@"C:\Recording\Samples\Samples2019\Cymatics - Strangers Bonus Packs\Cymatics - Rock Drum Loops Vol 1\Cymatics - Rock Drum Loop 1 - 110 BPM.wav"))
-        //using (var outputDevice = new WaveOutEvent())
-        //{
-        //    outputDevice.Init(audioFile);
-        //    outputDevice.Play();
-        //    while (outputDevice.PlaybackState == PlaybackState.Playing)
-        //    {
-        //        Thread.Sleep(1000);
-        //    }
-        //}
+            while (true)
+            {
+                using (var audioFile = new AudioFileReader(PATH_KICK1))
+                using (var outputDevice = new WaveOutEvent())
+                {
+                    outputDevice.Init(audioFile);
+                    outputDevice.Play();
+                    while (outputDevice.PlaybackState == PlaybackState.Playing)
+                    {
+                        Thread.Sleep(200);
+                    }
+                } 
+            }
 
-        // on startup:
+            // on startup:
             var zap = new CachedSound(PATH_KICK1);
             //var boom = new CachedSound(PATH_SNARE1);
 
