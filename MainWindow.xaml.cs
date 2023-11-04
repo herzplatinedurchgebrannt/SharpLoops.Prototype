@@ -1,8 +1,10 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Mixer;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Printing;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SharpLoops.Audio;
 
 namespace SharpLoops
 {
@@ -27,11 +30,22 @@ namespace SharpLoops
     {
         private const string PATH_KICK1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
         private const string PATH_SNARE1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_SNARE.wav";
-        private const string PATH_HAT1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_HAT1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_CL HAT.wav";
         private const string PATH_HAT2 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
         private const string PATH_TOM1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_LOW TOM.wav";
         private const string PATH_TOM2 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
-        private const string PATH_CRASH1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_CRASH1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_CRASH.wav";
+
+        private CachedSound _sound1;
+        private CachedSound _sound2;
+        private CachedSound _sound3;
+        private CachedSound _sound4;
+
+        MixingWaveProvider32 _mixer;
+        DirectSoundOut _soundOutput;
+
+        WaveOutEvent _waveOutEvent;
+
 
         private int[,] Pattern { get; set; }
 
@@ -40,7 +54,8 @@ namespace SharpLoops
         private int pos = 0;
         private bool[] state = new bool[8];
 
-             
+
+
         public MainWindow()
         {
             Pattern = new int[,]
@@ -51,6 +66,10 @@ namespace SharpLoops
                 { 0,0,0,0,0,0,0,0} 
             };
 
+            _sound1 = new CachedSound(PATH_KICK1);
+            _sound2 = new CachedSound(PATH_SNARE1);
+            _sound3 = new CachedSound(PATH_HAT1);
+            _sound4 = new CachedSound(PATH_CRASH1);
 
             SetTimer();
             InitializeComponent();
@@ -120,45 +139,21 @@ namespace SharpLoops
             c.Background = new SolidColorBrush(Colors.White);
 
 
-            Thread thread = new Thread(new ThreadStart(PlayTwoSounds));
+            Thread thread = new Thread(new ThreadStart(PlayMultiSounds));
             thread.Start();
         }
 
-        private void PlaySound()
+
+
+        private void PlayMultiSounds()
         {
-            using (var audioFile = new AudioFileReader(PATH_KICK1))
-            using (var outputDevice = new WaveOutEvent())
-            {
-                outputDevice.Init(audioFile);
-                outputDevice.Play();
-                while (outputDevice.PlaybackState == PlaybackState.Playing)
-                {
-                    Thread.Sleep(1000);
-                }
-            }
+            AudioPlaybackEngine.Instance.PlaySound(_sound1);
+            AudioPlaybackEngine.Instance.PlaySound(_sound2);
+            AudioPlaybackEngine.Instance.PlaySound(_sound3);
+            AudioPlaybackEngine.Instance.PlaySound(_sound4);
         }
 
-        private void PlayTwoSounds()
-        {
-            WaveStream audio1 = new WaveFileReader(PATH_KICK1);
-            WaveStream audio2 = new WaveFileReader(PATH_SNARE1);
-            WaveChannel32 first32 = new WaveChannel32(audio1);
-            WaveChannel32 second32 = new WaveChannel32(audio2);
-
-            second32.Volume = 0.3f;
-            MixingWaveProvider32 mixer = new MixingWaveProvider32();
-            mixer.AddInputStream(first32);
-            mixer.AddInputStream(second32);
-            DirectSoundOut dso = new DirectSoundOut(DirectSoundOut.DSDEVID_DefaultPlayback);
-            dso.Init(mixer);
-            dso.Play();
-
-            while (dso.PlaybackState == PlaybackState.Playing)
-            {
-                Thread.Sleep(1000);
-            }
-        }
-
+      
 
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {
