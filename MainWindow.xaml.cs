@@ -1,7 +1,10 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -22,6 +25,17 @@ namespace SharpLoops
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string PATH_KICK1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_SNARE1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_SNARE.wav";
+        private const string PATH_HAT1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_HAT2 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_TOM1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_LOW TOM.wav";
+        private const string PATH_TOM2 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+        private const string PATH_CRASH1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
+
+        private int[,] Pattern { get; set; }
+
+
         private System.Timers.Timer aTimer;
         private int pos = 0;
         private bool[] state = new bool[8];
@@ -29,9 +43,21 @@ namespace SharpLoops
              
         public MainWindow()
         {
+            Pattern = new int[,]
+            { 
+                { 0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0} 
+            };
+
+
             SetTimer();
             InitializeComponent();
         }
+
+
+
 
 
         private void SetTimer()        
@@ -94,22 +120,45 @@ namespace SharpLoops
             c.Background = new SolidColorBrush(Colors.White);
 
 
-
-
-
-            //ToggleButton btn = (ToggleButton)sender;
-
-            //if (btn.IsChecked == true)
-            //{
-            //    string b = btn.Name;
-            //    MessageBox.Show(b);
-            //    btn.Background = Brushes.Red;
-            //}
-            //else
-            //{
-            //    btn.Background = Brushes.LightGreen;
-            //}
+            Thread thread = new Thread(new ThreadStart(PlayTwoSounds));
+            thread.Start();
         }
+
+        private void PlaySound()
+        {
+            using (var audioFile = new AudioFileReader(PATH_KICK1))
+            using (var outputDevice = new WaveOutEvent())
+            {
+                outputDevice.Init(audioFile);
+                outputDevice.Play();
+                while (outputDevice.PlaybackState == PlaybackState.Playing)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+        }
+
+        private void PlayTwoSounds()
+        {
+            WaveStream audio1 = new WaveFileReader(PATH_KICK1);
+            WaveStream audio2 = new WaveFileReader(PATH_SNARE1);
+            WaveChannel32 first32 = new WaveChannel32(audio1);
+            WaveChannel32 second32 = new WaveChannel32(audio2);
+
+            second32.Volume = 0.3f;
+            MixingWaveProvider32 mixer = new MixingWaveProvider32();
+            mixer.AddInputStream(first32);
+            mixer.AddInputStream(second32);
+            DirectSoundOut dso = new DirectSoundOut(DirectSoundOut.DSDEVID_DefaultPlayback);
+            dso.Init(mixer);
+            dso.Play();
+
+            while (dso.PlaybackState == PlaybackState.Playing)
+            {
+                Thread.Sleep(1000);
+            }
+        }
+
 
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {

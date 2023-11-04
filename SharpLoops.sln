@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLoops", "SharpLoops.csproj", "{1CE10512-0198-4002-A8A7-503BDD88BD91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpLoops", "SharpLoops.csproj", "{1CE10512-0198-4002-A8A7-503BDD88BD91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLoops.AudioPlayground", "..\SharpLoops.AudioPlayground\SharpLoops.AudioPlayground.csproj", "{085339FB-7E0D-4374-95E3-345558A537A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1CE10512-0198-4002-A8A7-503BDD88BD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CE10512-0198-4002-A8A7-503BDD88BD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CE10512-0198-4002-A8A7-503BDD88BD91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{085339FB-7E0D-4374-95E3-345558A537A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{085339FB-7E0D-4374-95E3-345558A537A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{085339FB-7E0D-4374-95E3-345558A537A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{085339FB-7E0D-4374-95E3-345558A537A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
