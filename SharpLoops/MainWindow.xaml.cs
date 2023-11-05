@@ -30,12 +30,16 @@ namespace SharpLoops
         private Stopwatch _stopwatch;
         private BackgroundWorker _worker;
 
+        private PlayerState _state;
+
         public MainWindow()
         {
             // init values
             PatternPosition = 0;
 
             _stopwatch = new Stopwatch();
+
+            _state = PlayerState.Stop;
 
             // clear the pattern
             Pattern = new int[,]
@@ -54,9 +58,6 @@ namespace SharpLoops
 
 
             _worker = new BackgroundWorker();
-            _worker.WorkerReportsProgress = true;
-            _worker.DoWork += ManageAudio;
-            _worker.RunWorkerAsync(PatternPosition);
 
             InitializeComponent();
         }
@@ -89,17 +90,23 @@ namespace SharpLoops
         }
 
 
-        void ManageAudio(object sender, DoWorkEventArgs e)
+        private void ManageAudio(object sender, DoWorkEventArgs e)
         {
             // source: https://wpf-tutorial.com/de/97/sonstiges-miscellaneous/multithreading-mit-dem-backgroundworker/
             _stopwatch.Start();
 
-            while(true)
+            while(_state == PlayerState.Playing)
             {
 
                 if (_stopwatch.ElapsedMilliseconds >= 200) 
                 {
-                    
+                    if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
+                    if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
+                    if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
+                    if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+
+                    MarkLocator(PatternPosition); // this must be done somewhere else. 
+
                     if (PatternPosition < TotalSteps - 1)
                     {
                         PatternPosition++;
@@ -109,12 +116,7 @@ namespace SharpLoops
                         PatternPosition = 0;
                     }
 
-                    if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
-                    if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
-                    if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
-                    if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
 
-                    MarkLocator(PatternPosition); // this must be done somewhere else. 
 
                     Debug.WriteLine(_stopwatch.ElapsedTicks);
 
@@ -135,8 +137,6 @@ namespace SharpLoops
             if (!this.Dispatcher.CheckAccess())
             { // Wenn Invoke nötig ist, ...
               // dann rufen wir die Methode selbst per Invoke auf
-
-                Console.WriteLine("bla");
 
                 return (bool)this.Dispatcher.Invoke((Func<int, bool>)MarkLocator, pos);
                 // hier ist immer ein return (oder alternativ ein else) erforderlich.
@@ -160,6 +160,37 @@ namespace SharpLoops
             }
             return true; // lesender Zugriff
         }
+
+        private bool ClearButtonState(int pos)
+        {
+            // source: https://mycsharp.de/forum/threads/33113/faq-controls-von-thread-aktualisieren-lassen-control-invoke-dispatcher-invoke
+            if (!this.Dispatcher.CheckAccess())
+            { // Wenn Invoke nötig ist, ...
+              // dann rufen wir die Methode selbst per Invoke auf
+
+                return (bool)this.Dispatcher.Invoke((Func<int, bool>)MarkLocator, pos);
+                // hier ist immer ein return (oder alternativ ein else) erforderlich.
+                // Es verhindert, dass der folgende Code im Worker-Thread ausgeführt wird.
+            }
+            // eigentliche Zugriffe; laufen jetzt auf jeden Fall im GUI-Thread
+            //progressBar.Value = percent; // schreibender Zugriff
+
+            for (int i = 0; i < TotalTracks; i++)
+            {
+                for (int j = 0; j < TotalSteps; j++)
+                {
+                    Button lbl = j >= 10 ? (Button)this.FindName("button_0" + i + "_" + j) : (Button)this.FindName("button_0" + i + "_0" + j);
+
+                    lbl.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+
+            return true; // lesender Zugriff
+        }
+
+
+
+
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
@@ -208,9 +239,42 @@ namespace SharpLoops
 
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {
-            Button b = (Button)this.FindName("buttonStop");
+            _state = PlayerState.Playing;
 
-            b.Background = new SolidColorBrush(Colors.White);
+            _worker.WorkerReportsProgress = true;
+            _worker.DoWork += ManageAudio!;
+            _worker.RunWorkerAsync(PatternPosition);
+            //Button b = (Button)this.FindName("buttonStop");
+
+            //b.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private void StopButtonClick(object sender, RoutedEventArgs e)
+        {
+            // issue: does not start at pos 1 again
+
+            _state = PlayerState.Stop;
+
+            PatternPosition = 0;
+        }
+
+        private void ClearButtonClick(object sender, RoutedEventArgs e)
+        {
+            // issue: reset button color
+
+            Pattern = new int[,]
+            {
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+            };
+
+            ClearButtonState(0);
+
+            //Button b = (Button)this.FindName("buttonStop");
+
+            //b.Background = new SolidColorBrush(Colors.White);
         }
     }
 }
