@@ -295,5 +295,10 @@ namespace SharpLoops
                 TempoBpm = Convert.ToInt32(tempoBox.Text);
             }
         }
+
+        private void button_00_01_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine("");
+        }
     }
 }

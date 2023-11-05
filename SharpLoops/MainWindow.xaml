@@ -163,6 +163,9 @@
         <Button x:Name="buttonPattern9" Content="9" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="40,-35,0,0" VerticalAlignment="Top" Width="20"/>
         <Label x:Name="labelPattern" Content="PATTERN" HorizontalAlignment="Left" Height="25" Margin="73,-22,0,0" VerticalAlignment="Top" Width="51" Foreground="#FF8C8C8C" FontSize="10"/>
         <Label x:Name="labelTempo" Content="TEMPO" HorizontalAlignment="Left" Height="25" Margin="144,-22,0,0" VerticalAlignment="Top" Width="43" Foreground="#FF8C8C8C" FontSize="10"/>
+        
+        
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="300,-50,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
