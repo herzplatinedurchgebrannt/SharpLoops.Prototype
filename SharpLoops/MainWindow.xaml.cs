@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using NAudio.Gui;
 using SharpLoops.Audio;
@@ -59,6 +61,8 @@ namespace SharpLoops
 
             _worker = new BackgroundWorker();
 
+            TempoBpm = 120;
+
             InitializeComponent();
         }
 
@@ -71,6 +75,12 @@ namespace SharpLoops
         { 
             get; 
             private set; 
+        }
+
+        public int TempoBpm
+        {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -151,11 +161,11 @@ namespace SharpLoops
 
                 if (i == pos)
                 {
-                    lbl.Background = new SolidColorBrush(Colors.White);
+                    lbl.Background = new SolidColorBrush(Colors.DarkGray);
                 }
                 else
                 {
-                    lbl.Background = new SolidColorBrush(Colors.Blue);
+                    lbl.Background = new SolidColorBrush(Colors.DarkRed);
                 }
             }
             return true; // lesender Zugriff
@@ -226,24 +236,24 @@ namespace SharpLoops
         }
 
 
-
-        private void PlayMultiSounds()
-        {
-            AudioPlaybackEngine.Instance.PlaySound(_sound1);
-            AudioPlaybackEngine.Instance.PlaySound(_sound2);
-            AudioPlaybackEngine.Instance.PlaySound(_sound3);
-            AudioPlaybackEngine.Instance.PlaySound(_sound4);
-        }
-
-      
-
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {
-            _state = PlayerState.Playing;
+            if (_state != PlayerState.Playing) 
+            {
+                _state = PlayerState.Playing;
 
-            _worker.WorkerReportsProgress = true;
-            _worker.DoWork += ManageAudio!;
-            _worker.RunWorkerAsync(PatternPosition);
+                _worker.WorkerReportsProgress = true;
+                _worker.DoWork += ManageAudio!;
+                _worker.RunWorkerAsync(PatternPosition);
+            }
+            else
+            {
+                _state = PlayerState.Pause;
+            }
+
+
+
+
             //Button b = (Button)this.FindName("buttonStop");
 
             //b.Background = new SolidColorBrush(Colors.White);
@@ -275,6 +285,15 @@ namespace SharpLoops
             //Button b = (Button)this.FindName("buttonStop");
 
             //b.Background = new SolidColorBrush(Colors.White);
+        }
+
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TempoBpm = Convert.ToInt32(tempoBox.Text);
+            }
         }
     }
 }
