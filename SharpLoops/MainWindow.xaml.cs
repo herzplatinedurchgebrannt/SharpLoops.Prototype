@@ -1,14 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using NAudio.Gui;
-using NAudio.Wave;
 using SharpLoops.Audio;
 
 namespace SharpLoops
@@ -32,6 +28,7 @@ namespace SharpLoops
         private CachedSound _sound4;
 
         private Stopwatch _stopwatch;
+        private BackgroundWorker _worker;
 
         public MainWindow()
         {
@@ -43,10 +40,10 @@ namespace SharpLoops
             // clear the pattern
             Pattern = new int[,]
             { 
-                { 0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0} 
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } 
             };
 
             // cache the drum samples
@@ -56,10 +53,10 @@ namespace SharpLoops
             _sound4 = new CachedSound(PATH_CRASH1);
 
 
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerAsync(PatternPosition);
+            _worker = new BackgroundWorker();
+            _worker.WorkerReportsProgress = true;
+            _worker.DoWork += ManageAudio;
+            _worker.RunWorkerAsync(PatternPosition);
 
             InitializeComponent();
         }
@@ -92,7 +89,7 @@ namespace SharpLoops
         }
 
 
-        void worker_DoWork(object sender, DoWorkEventArgs e)
+        void ManageAudio(object sender, DoWorkEventArgs e)
         {
             // source: https://wpf-tutorial.com/de/97/sonstiges-miscellaneous/multithreading-mit-dem-backgroundworker/
             _stopwatch.Start();
@@ -103,7 +100,7 @@ namespace SharpLoops
                 if (_stopwatch.ElapsedMilliseconds >= 200) 
                 {
                     
-                    if (PatternPosition < 7)
+                    if (PatternPosition < TotalSteps - 1)
                     {
                         PatternPosition++;
                     }
@@ -117,7 +114,10 @@ namespace SharpLoops
                     if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
                     if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
 
+                    MarkLocator(PatternPosition); // this must be done somewhere else. 
+
                     Debug.WriteLine(_stopwatch.ElapsedTicks);
+
                     _stopwatch.Restart();
                 }
 
@@ -145,9 +145,9 @@ namespace SharpLoops
             // eigentliche Zugriffe; laufen jetzt auf jeden Fall im GUI-Thread
             //progressBar.Value = percent; // schreibender Zugriff
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < TotalSteps; i++)
             {
-                Label lbl = (Label)this.FindName("label_00_0"+i);
+                Label lbl = i >= 10 ? (Label)this.FindName("label_00_" + i) : (Label)this.FindName("label_00_0" + i);
 
                 if (i == pos)
                 {
