@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,6 @@ namespace SharpLoops
         private CachedSound _sound3;
         private CachedSound _sound4;
 
-        //private System.Timers.Timer Clock;
         private Stopwatch _stopwatch;
 
         public MainWindow()
@@ -39,12 +39,6 @@ namespace SharpLoops
             PatternPosition = 0;
 
             _stopwatch = new Stopwatch();
-
-            // start the clock
-            //Clock = new System.Timers.Timer(500);
-            //Clock.Elapsed += MoveLocatorToNextPos!;
-            //Clock.AutoReset = true;
-            //Clock.Enabled = true;
 
             // clear the pattern
             Pattern = new int[,]
@@ -84,7 +78,7 @@ namespace SharpLoops
         /// <summary>
         /// Total number of sample tracks.
         /// </summary>
-        public int TotalChannels
+        public int TotalTracks
         {
             get { return Pattern.GetLength(0); }
         }
@@ -98,38 +92,17 @@ namespace SharpLoops
         }
 
 
-        private void MoveLocatorToNextPos(Object source, ElapsedEventArgs e)
-        {
-
-            if (PatternPosition < 7)
-            {
-                PatternPosition++;
-            }
-            else
-            {
-                PatternPosition = 0;
-            }
-
-            //string n = "buttonB0" + PatternPosition;
-
-
-
-
-
-
-            
-        }
-
-
         void worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            // source: https://wpf-tutorial.com/de/97/sonstiges-miscellaneous/multithreading-mit-dem-backgroundworker/
             _stopwatch.Start();
 
             while(true)
             {
 
-                if (_stopwatch.ElapsedMilliseconds > 200) 
+                if (_stopwatch.ElapsedMilliseconds >= 200) 
                 {
+                    
                     if (PatternPosition < 7)
                     {
                         PatternPosition++;
@@ -139,19 +112,19 @@ namespace SharpLoops
                         PatternPosition = 0;
                     }
 
-                    MarkLocator(PatternPosition);
-
                     if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
                     if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
                     if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
                     if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
 
+                    Debug.WriteLine(_stopwatch.ElapsedTicks);
                     _stopwatch.Restart();
                 }
 
 
             }
         }
+
 
 
 
