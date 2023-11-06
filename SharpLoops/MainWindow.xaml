@@ -11,161 +11,193 @@
         Background="#FF313131"
         WindowStartupLocation="CenterOwner">
 
-    <Grid Width="400" Height="200" Background="Black" VerticalAlignment="Bottom" Margin="10">
-
+    <Grid Width="Auto" Height="Auto" Background="Black">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="63*" />
+            <ColumnDefinition Width="7*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="33*" />
-            <RowDefinition Height="33*" />
-            <RowDefinition Height="33*" />
-            <RowDefinition Height="22*" />
-            <RowDefinition Height="11*"/>
-            <RowDefinition Height="19*" />
-            <RowDefinition Height="15*"/>
-            <RowDefinition Height="33*" />
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="33*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="23*"/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Foreground="White"></Label>
+        <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New" />
+                    <MenuItem Header="_Open" />
+                    <MenuItem Header="_Save" />
+                    <Separator />
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+            </Menu>
+        </DockPanel>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Height="20" Margin="0,7,0,6" >
-            <Label Name="label_00_00" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_01" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_02" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_03" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_04" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_05" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_06" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_07" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_08" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_09" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_10" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_11" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_12" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_13" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_14" Width="15" Margin="2" Background="DarkRed" ></Label>
-            <Label Name="label_00_15" Width="15" Margin="2" Background="DarkRed" ></Label>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+            <Button x:Name="buttonTempoUp" Content="+" Width="13"/>
+            <TextBox x:Name="tempoBox" Text="120" Width="30" Background="Black" Foreground="White" KeyDown="OnKeyDownHandler" TextAlignment="Right"/>
+            <Button x:Name="buttonTempoDown" Content="-" Width="13"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
+            <Button x:Name="patternTempoUp" Content="+"  Width="13"/>
+            <TextBox x:Name="patternBox" Text="1" Width="25" Background="Black" Foreground="White" TextAlignment="Right" />
+            <Button x:Name="patternTempoDown" Content="-" Width="13"/>
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <StackPanel >
+                <Button x:Name="buttonPattern1" Content="1" Background="DarkRed"  Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern2" Content="2" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern3" Content="3" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+            </StackPanel>
+            <StackPanel>
+                <Button x:Name="buttonPattern4" Content="4" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern5" Content="5" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern6" Content="6" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+            </StackPanel>
+            <StackPanel>
+                <Button x:Name="buttonPattern7" Content="7" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern8" Content="8" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+                <Button x:Name="buttonPattern9" Content="9" Background="DarkGray" Foreground="White" Height="20" Width="20"/>
+            </StackPanel>
+        </StackPanel>
+
+
+
+        <Label Grid.Column="0" Foreground="White" Margin="0,76,0,0" Grid.RowSpan="2"/>
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30" Grid.RowSpan="2" Width="Auto" >
+            <Label Name="label_00_00" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_01" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_02" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_03" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_04" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_05" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_06" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_07" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_08" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_09" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_10" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_11" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_12" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_13" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_14" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
+            <Label Name="label_00_15" Width="15" Height="10" Margin="2" Background="DarkRed" ></Label>
 
         </StackPanel>
 
 
-        <Label Foreground="White" Margin="0,33,0,33" Grid.RowSpan="3">Kick</Label>
+        <Label Grid.Row="2" Grid.Column="0" Foreground="White" Margin="0,28,0,0" Grid.RowSpan="2">Kick</Label>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Margin="0,2,0,2" >
-            <Button Name="button_00_00" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_01" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_02" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_03" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_04" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_05" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_06" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_07" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_08" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_09" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_10" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_11" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_12" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_13" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_14" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
-            <Button Name="button_00_15" Width="15" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30" Grid.RowSpan="2" Width="Auto" >
+            <Button Name="button_00_00" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_01" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_02" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_03" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_04" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_05" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_06" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_07" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_08" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_09" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_10" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_11" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_12" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_13" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_14" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
+            <Button Name="button_00_15" Width="15" Height="20" Margin="2" Background="DarkGray" Click="ButtonClick"></Button>
         </StackPanel>
 
-        <Label Grid.Row="2" Foreground="White">Snare</Label>
+        <Label Grid.Row="3" Grid.Column="0" Foreground="White" Margin="0,28,0,0" Grid.RowSpan="2">Snare</Label>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Margin="0,1,0,2" >
-            <Button Name="button_01_00" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_01" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_02" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_03" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_04" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_05" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_06" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_07" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_08" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_09" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_10" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_11" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_01_12" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_13" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_14" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_01_15" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30" Grid.RowSpan="2" Width="Auto" >
+            <Button Name="button_01_00" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_01" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_02" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_03" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_04" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_05" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_06" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_07" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_08" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_09" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_10" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_11" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_01_12" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_13" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_14" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_01_15" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
         </StackPanel>
 
-        <Label Grid.Row="3" Foreground="White" Grid.RowSpan="2">Hihat</Label>
+        <Label Grid.Row="4" Grid.Column="0" Foreground="White" Margin="0,28,0,0" Grid.RowSpan="2">Hihat</Label>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Margin="0,2,0,1" Grid.RowSpan="2" >
-            <Button Name="button_02_00" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_01" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_02" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_03" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_04" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_05" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_06" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_07" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_08" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_09" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_10" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_11" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_02_12" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_13" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_14" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_02_15" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30" Grid.RowSpan="2" Width="Auto" >
+            <Button Name="button_02_00" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_01" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_02" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_03" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_04" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_05" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_06" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_07" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_08" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_09" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_10" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_11" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_02_12" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_13" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_14" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_02_15" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
         </StackPanel>
 
-        <Label Grid.Row="4" Foreground="White" Margin="0,11,0,33" Grid.RowSpan="4">Crash</Label>
+        <Label Grid.Row="5" Grid.Column="0" Foreground="White" Margin="0,28,0,0" Grid.RowSpan="2">Crash</Label>
 
-        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Margin="0,2,0,2" Grid.RowSpan="2" >
-            <Button Name="button_03_00" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_01" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_02" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_03" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_04" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_05" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_06" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_07" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_08" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_09" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_10" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_11" Width="15" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
-            <Button Name="button_03_12" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_13" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_14" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
-            <Button Name="button_03_15" Width="15" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30" Grid.RowSpan="2" Width="Auto" >
+            <Button Name="button_03_00" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_01" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_02" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_03" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_04" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_05" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_06" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_07" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_08" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_09" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_10" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_11" Width="15" Height="20" Margin="2" Background="LightGray" Click="ButtonClick"></Button>
+            <Button Name="button_03_12" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_13" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_14" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
+            <Button Name="button_03_15" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center" Height="30" Margin="0,1,0,2">
+        <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,28,0,26" Grid.RowSpan="3" Width="180">
             <Button Name="buttonPlay" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="PlayButtonClick">Play</Button>
             <Button Name="buttonStop" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="StopButtonClick">Stop</Button>
             <Button Name="buttonTest" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="ClearButtonClick">Clear</Button>
         </StackPanel>
         <Grid/>
 
-        <Grid HorizontalAlignment="Left" Height="20" Margin="117,-35,0,0" VerticalAlignment="Top" Width="76">
-            <Button x:Name="buttonTempoUp" Content="+" HorizontalAlignment="Left" Margin="63,0,0,0" VerticalAlignment="Center" Width="13"/>
-            <Button x:Name="buttonTempoDown" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Width="13" Margin="20,0,0,0"/>
-            <TextBox x:Name="tempoBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="120" VerticalAlignment="Center" Width="30" Height="20" Background="Black" Foreground="White" KeyDown="OnKeyDownHandler" TextAlignment="Right" Margin="33,0,0,0"/>
-        </Grid>
 
-        <Grid HorizontalAlignment="Left" Margin="73,-35,0,0" VerticalAlignment="Top" Width="51">
-            <TextBox x:Name="patternBox" HorizontalAlignment="Center" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="25" Background="Black" Foreground="White" TextAlignment="Right" Height="20"/>
-            <Button x:Name="patternTempoUp" Content="+" HorizontalAlignment="Left" Margin="38,0,0,0" VerticalAlignment="Top" Width="13" Height="20"/>
-            <Button x:Name="patternTempoDown" Content="-" HorizontalAlignment="Left" VerticalAlignment="Top" Width="13"/>
-        </Grid>
-        <Button x:Name="buttonPattern1" Content="1" Background="DarkRed"   Foreground="White" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20" Margin="0,-75,0,0" />
-        <Button x:Name="buttonPattern2" Content="2" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20" Margin="20,-75,0,0"/>
-        <Button x:Name="buttonPattern3" Content="3" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="40,-75,0,0" VerticalAlignment="Top" Width="20"/>
-        <Button x:Name="buttonPattern4" Content="4" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20" Margin="0,-55,0,0"/>
-        <Button x:Name="buttonPattern5" Content="5" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20" Margin="20,-55,0,0"/>
-        <Button x:Name="buttonPattern6" Content="6" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="40,-55,0,0" VerticalAlignment="Top" Width="20" RenderTransformOrigin="0.5,-3.579"/>
-        <Button x:Name="buttonPattern7" Content="7" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="0,-35,0,0" VerticalAlignment="Top" Width="20"/>
-        <Button x:Name="buttonPattern8" Content="8" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="20,-35,0,0" VerticalAlignment="Top" Width="20"/>
-        <Button x:Name="buttonPattern9" Content="9" Background="DarkGray" Foreground="White" HorizontalAlignment="Left" Height="20" Margin="40,-35,0,0" VerticalAlignment="Top" Width="20"/>
-        <Label x:Name="labelPattern" Content="PATTERN" HorizontalAlignment="Left" Height="25" Margin="73,-22,0,0" VerticalAlignment="Top" Width="51" Foreground="#FF8C8C8C" FontSize="10"/>
-        <Label x:Name="labelTempo" Content="TEMPO" HorizontalAlignment="Left" Height="25" Margin="144,-22,0,0" VerticalAlignment="Top" Width="43" Foreground="#FF8C8C8C" FontSize="10"/>
-        
-        
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="300,-50,0,0" VerticalAlignment="Top"/>
+
+        <Label x:Name="labelPattern" Content="PATTERN" HorizontalAlignment="Left" Height="25" Margin="8,-22,0,0" VerticalAlignment="Top" Width="51" Foreground="#FF8C8C8C" FontSize="10" Grid.Column="1"/>
+        <Label x:Name="labelTempo" Content="TEMPO" HorizontalAlignment="Left" Height="25" Margin="14,-22,0,0" VerticalAlignment="Top" Width="43" Foreground="#FF8C8C8C" FontSize="10" Grid.Column="1"/>
+
+
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="33,-50,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="0"/>
+
+
 
     </Grid>
 </Window>
