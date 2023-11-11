@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NAudio.CoreAudioApi;
+using System.Diagnostics;
 
 namespace SharpLoops.Audio
 {
@@ -13,6 +14,11 @@ namespace SharpLoops.Audio
     {
         private readonly IWavePlayer outputDevice;
         private readonly MixingSampleProvider mixer;
+
+        float[] Buffi = new float[50];
+
+        public event EventHandler<float[]> PlottDataAvailable;
+
 
         public AudioPlaybackEngine(int sampleRate = 44100, int channelCount = 2)
         {
@@ -24,10 +30,20 @@ namespace SharpLoops.Audio
             outputDevice.Play();
         }
 
+        public float[] GetBuffer()
+        {
+           
+            return Buffi;
+        }
+
+
+
         public void PlaySound(string fileName)
         {
             var input = new AudioFileReader(fileName);
             AddMixerInput(new AutoDisposeFileReader(input));
+
+            
         }
 
         private ISampleProvider ConvertToRightChannelCount(ISampleProvider input)
@@ -46,11 +62,26 @@ namespace SharpLoops.Audio
         public void PlaySound(CachedSound sound)
         {
             AddMixerInput(new CachedSoundSampleProvider(sound));
+
+            float[] buf = new float[1000];
+
+            mixer.Read(buf, 0, buf.Length);
+
+            PlottDataAvailable.Invoke(this, buf);
+        }
+
+        internal void InternalRaisePlottDataAvailable(float[] f)
+        {
+
         }
 
         private void AddMixerInput(ISampleProvider input)
         {
             mixer.AddMixerInput(ConvertToRightChannelCount(input));
+
+            int x = mixer.MixerInputs.First().Read(Buffi, 0, Buffi.Length);
+
+            Debug.WriteLine(x);
         }
 
         public void Dispose()

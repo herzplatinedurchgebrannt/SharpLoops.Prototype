@@ -191,9 +191,6 @@
             <Button Name="buttonTest" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="ClearButtonClick">Clear</Button>
         </StackPanel>
         <Grid/>
-        <ScottPlot:WpfPlot x:Name="WpfPlot1" Margin="92,-6,8,30" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="2" />
-
-
     </Grid>
 
 </Window>

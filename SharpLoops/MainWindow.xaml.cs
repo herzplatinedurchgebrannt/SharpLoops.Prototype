@@ -2,11 +2,14 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Security.Policy;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using NAudio.Gui;
+using ScottPlot;
 using SharpLoops.Audio;
 
 namespace SharpLoops
@@ -34,10 +37,12 @@ namespace SharpLoops
 
         private PlayerState _state;
 
+        private System.Timers.Timer _timer;
+
+        WaveOutput waveOutput;
+
         public MainWindow()
         {
-
-
 
             // init values
             PatternPosition = 0;
@@ -67,7 +72,33 @@ namespace SharpLoops
             TempoBpm = 120;
 
             InitializeComponent();
+
+            waveOutput = new WaveOutput();
+            waveOutput.Show();
+
+            _timer = new System.Timers.Timer(50);
+            _timer.Elapsed += DoCoolStuff!;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+
+            AudioPlaybackEngine.Instance.PlottDataAvailable += Hello!;
+
         }
+
+
+        public float[] _buf = new float[1000];
+
+        public void DoCoolStuff(Object source, ElapsedEventArgs e)
+        {
+            RefreshScott(_buf);
+        }
+
+
+        public void Hello(Object sender, float[] f)
+        {
+            _buf = f;
+        }
+
 
         public int[,] Pattern 
         { 
@@ -131,7 +162,7 @@ namespace SharpLoops
 
 
 
-                    Debug.WriteLine(_stopwatch.ElapsedTicks);
+                    //Debug.WriteLine(_stopwatch.ElapsedTicks);
 
                     _stopwatch.Restart();
                 }
@@ -140,6 +171,18 @@ namespace SharpLoops
             }
         }
 
+        public void RefreshScott(float[] f)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                waveOutput.WpfPlot1.Plot.Clear();
+                waveOutput.WpfPlot1.Plot.AddSignal(f);
+                waveOutput.WpfPlot1.Refresh();
+                
+            }));
+
+
+        }
 
 
 
@@ -210,8 +253,6 @@ namespace SharpLoops
             double[] dataX = new double[] { 1, 2, 3, 4, 5 };
             double[] dataY = new double[] { 1, 4, 9, 16, 25 };
 
-            WpfPlot1.Plot.AddScatter(dataX, dataY);
-            WpfPlot1.Refresh();
 
 
             Button btn = (Button)sender;

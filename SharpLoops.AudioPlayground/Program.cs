@@ -19,13 +19,19 @@ namespace SharpLoops.AudioPlayground
 
             while (true)
             {
+
+                
+
+
                 using (var audioFile = new AudioFileReader(PATH_KICK1))
                 using (var outputDevice = new WaveOutEvent())
                 {
                     outputDevice.Init(audioFile);
                     outputDevice.Play();
                     while (outputDevice.PlaybackState == PlaybackState.Playing)
+                    
                     {
+ 
                         Thread.Sleep(200);
                     }
                 } 
