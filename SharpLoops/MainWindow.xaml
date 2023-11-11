@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ScottPlot="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
         xmlns:local="clr-namespace:SharpLoops"
         mc:Ignorable="d"
         Title="SharpLoops" 
@@ -27,7 +28,6 @@
             <RowDefinition Height="33*"/>
             <RowDefinition Height="33*"/>
             <RowDefinition Height="40*"/>
-            <RowDefinition Height="23*"/>
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
@@ -42,17 +42,20 @@
             </Menu>
         </DockPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
-            <Button x:Name="buttonTempoUp" Content="+" Width="13"/>
-            <TextBox x:Name="tempoBox" Text="120" Width="30" Background="Black" Foreground="White" KeyDown="OnKeyDownHandler" TextAlignment="Right"/>
-            <Button x:Name="buttonTempoDown" Content="-" Width="13"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Width="50">
+            <Button x:Name="patternTempoUp" Content="+"/>
+            <TextBox x:Name="patternBox" Text="1" Background="Black" Foreground="White" TextAlignment="Center" />
+            <Button x:Name="patternTempoDown" Content="-"/>
+            <Label x:Name="labelPattern" Content="PATTERN" Foreground="#FF8C8C8C" FontSize="10" HorizontalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
-            <Button x:Name="patternTempoUp" Content="+"  Width="13"/>
-            <TextBox x:Name="patternBox" Text="1" Width="25" Background="Black" Foreground="White" TextAlignment="Right" />
-            <Button x:Name="patternTempoDown" Content="-" Width="13"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right" Width="50">
+            <Button x:Name="buttonTempoUp" Content="+" />
+            <TextBox x:Name="tempoBox" Text="120" Background="Black" Foreground="White" KeyDown="OnKeyDownHandler" TextAlignment="Right"/>
+            <Button x:Name="buttonTempoDown" Content="-"/>
+            <Label x:Name="labelTempo" Content="TEMPO" Foreground="#FF8C8C8C" FontSize="10" HorizontalAlignment="Center"/>
         </StackPanel>
+
 
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
@@ -182,22 +185,15 @@
             <Button Name="button_03_15" Width="15" Height="20" Margin="2" Background="DarkGray"  Click="ButtonClick"></Button>
         </StackPanel>
 
-        <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,28,0,26" Grid.RowSpan="3" Width="180">
+        <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,28,0,5" Grid.RowSpan="2" Width="180">
             <Button Name="buttonPlay" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="PlayButtonClick">Play</Button>
             <Button Name="buttonStop" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="StopButtonClick">Stop</Button>
             <Button Name="buttonTest" Width="50" Margin="5" Background="#FF38343A" BorderBrush="Black" Foreground="White" Click="ClearButtonClick">Clear</Button>
         </StackPanel>
         <Grid/>
-
-
-
-        <Label x:Name="labelPattern" Content="PATTERN" HorizontalAlignment="Left" Height="25" Margin="8,-22,0,0" VerticalAlignment="Top" Width="51" Foreground="#FF8C8C8C" FontSize="10" Grid.Column="1"/>
-        <Label x:Name="labelTempo" Content="TEMPO" HorizontalAlignment="Left" Height="25" Margin="14,-22,0,0" VerticalAlignment="Top" Width="43" Foreground="#FF8C8C8C" FontSize="10" Grid.Column="1"/>
-
-
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="33,-50,0,0" VerticalAlignment="Top" Grid.Column="2" Height="20" Width="0"/>
-
+        <ScottPlot:WpfPlot x:Name="WpfPlot1" Margin="92,-6,8,30" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="2" />
 
 
     </Grid>
+
 </Window>

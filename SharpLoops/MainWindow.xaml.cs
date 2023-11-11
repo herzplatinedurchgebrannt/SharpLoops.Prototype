@@ -36,6 +36,9 @@ namespace SharpLoops
 
         public MainWindow()
         {
+
+
+
             // init values
             PatternPosition = 0;
 
@@ -100,7 +103,7 @@ namespace SharpLoops
         }
 
 
-        private void ManageAudio(object sender, DoWorkEventArgs e)
+        private void AudioWorker(object sender, DoWorkEventArgs e)
         {
             // source: https://wpf-tutorial.com/de/97/sonstiges-miscellaneous/multithreading-mit-dem-backgroundworker/
             _stopwatch.Start();
@@ -204,6 +207,13 @@ namespace SharpLoops
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
+            double[] dataX = new double[] { 1, 2, 3, 4, 5 };
+            double[] dataY = new double[] { 1, 4, 9, 16, 25 };
+
+            WpfPlot1.Plot.AddScatter(dataX, dataY);
+            WpfPlot1.Refresh();
+
+
             Button btn = (Button)sender;
 
             if (btn != null)
@@ -243,7 +253,7 @@ namespace SharpLoops
                 _state = PlayerState.Playing;
 
                 _worker.WorkerReportsProgress = true;
-                _worker.DoWork += ManageAudio!;
+                _worker.DoWork += AudioWorker!;
                 _worker.RunWorkerAsync(PatternPosition);
             }
             else
@@ -294,11 +304,6 @@ namespace SharpLoops
             {
                 TempoBpm = Convert.ToInt32(tempoBox.Text);
             }
-        }
-
-        private void button_00_01_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Console.WriteLine("");
         }
     }
 }
