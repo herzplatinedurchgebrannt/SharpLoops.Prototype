@@ -27,23 +27,21 @@ namespace SharpLoops
         private const string PATH_TOM2 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_KICK.wav";
         private const string PATH_CRASH1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_CRASH.wav";
 
+        private float[] _buf = new float[1000];
+        private ScottPlot.Plottable.DataStreamer _streamer;
         private CachedSound _sound1;
         private CachedSound _sound2;
         private CachedSound _sound3;
         private CachedSound _sound4;
-
         private Stopwatch _stopwatch;
         private BackgroundWorker _worker;
-
-        private PlayerState _state;
-
+        private WaveOutput _waveOutput;
         private System.Timers.Timer _timer;
-
-        WaveOutput waveOutput;
+        private PlayerState _state;
+        private bool _newDataAvailable;
 
         public MainWindow()
         {
-
             // init values
             PatternPosition = 0;
 
@@ -66,37 +64,68 @@ namespace SharpLoops
             _sound3 = new CachedSound(PATH_HAT1);
             _sound4 = new CachedSound(PATH_CRASH1);
 
-
             _worker = new BackgroundWorker();
 
             TempoBpm = 120;
 
             InitializeComponent();
 
-            waveOutput = new WaveOutput();
-            waveOutput.Show();
+            _waveOutput = new WaveOutput();
+            _waveOutput.Show();
 
             _timer = new System.Timers.Timer(50);
-            _timer.Elapsed += DoCoolStuff!;
+            _timer.Elapsed += RefreshGraph!;
             _timer.AutoReset = true;
             _timer.Enabled = true;
+            _newDataAvailable = false;
 
-            AudioPlaybackEngine.Instance.PlottDataAvailable += Hello!;
+            InitWaveWindow();
+
+            AudioPlaybackEngine.Instance.PlottDataAvailable += UpdateGraphData!;
 
         }
 
-
-        public float[] _buf = new float[1000];
-
-        public void DoCoolStuff(Object source, ElapsedEventArgs e)
+        public void InitWaveWindow()
         {
-            RefreshScott(_buf);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                _waveOutput.WpfPlot1.Plot.SetAxisLimitsY(-2, 2);
+                _streamer = _waveOutput.WpfPlot1.Plot.AddDataStreamer(1000);
+
+                _waveOutput.WpfPlot1.Render();
+            }));
         }
 
 
-        public void Hello(Object sender, float[] f)
+        public void RefreshGraph(Object source, ElapsedEventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                //waveOutput.WpfPlot1.Plot.Clear();
+                //waveOutput.WpfPlot1.Plot.AddDataStreamer(1000);
+                //waveOutput.WpfPlot1.Plot.AddSignal(f);
+                //waveOutput.WpfPlot1.Plot.
+                // waveOutput.WpfPlot1.Refresh();
+
+                foreach (var item in _buf)
+                {
+                    _streamer.Add(item);
+                }
+                _waveOutput.WpfPlot1.Refresh();
+
+            }));
+
+            //_newDataAvailable = false;
+
+            Array.Clear(_buf);
+        }
+
+
+        public void UpdateGraphData(Object sender, float[] f)
         {
             _buf = f;
+
+            //_newDataAvailable = true;
         }
 
 
@@ -160,8 +189,6 @@ namespace SharpLoops
                         PatternPosition = 0;
                     }
 
-
-
                     //Debug.WriteLine(_stopwatch.ElapsedTicks);
 
                     _stopwatch.Restart();
@@ -171,22 +198,10 @@ namespace SharpLoops
             }
         }
 
-        public void RefreshScott(float[] f)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                waveOutput.WpfPlot1.Plot.Clear();
-                waveOutput.WpfPlot1.Plot.AddSignal(f);
-                waveOutput.WpfPlot1.Refresh();
-                
-            }));
-
-
-        }
 
 
 
-
+        
         private bool MarkLocator(int pos)
         {
             // source: https://mycsharp.de/forum/threads/33113/faq-controls-von-thread-aktualisieren-lassen-control-invoke-dispatcher-invoke
