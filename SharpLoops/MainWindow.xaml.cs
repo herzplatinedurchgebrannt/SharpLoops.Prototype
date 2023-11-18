@@ -7,10 +7,11 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Drawing;
 using NAudio.Gui;
 using ScottPlot;
 using SharpLoops.Audio;
+using System.Windows.Media;
 
 namespace SharpLoops
 {
@@ -70,8 +71,8 @@ namespace SharpLoops
 
             InitializeComponent();
 
-            _waveOutput = new WaveOutput();
-            _waveOutput.Show();
+            //_waveOutput = new WaveOutput();
+            //_waveOutput.Show();
 
             _timer = new System.Timers.Timer(50);
             _timer.Elapsed += RefreshGraph!;
@@ -89,10 +90,23 @@ namespace SharpLoops
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                _waveOutput.WpfPlot1.Plot.SetAxisLimitsY(-2, 2);
-                _streamer = _waveOutput.WpfPlot1.Plot.AddDataStreamer(1000);
+                var plt = OutputPlot.Plot;
 
-                _waveOutput.WpfPlot1.Render();
+
+                plt.SetAxisLimitsY(-2, 2);
+                _streamer = plt.AddDataStreamer(1000);
+                plt.Style(
+                    figureBackground: System.Drawing.Color.Black,
+                    dataBackground: System.Drawing.Color.Black
+                );
+
+
+
+                plt.Title("Output");
+                plt.XLabel("");
+                plt.YLabel("");
+                plt.Render();
+       
             }));
         }
 
@@ -111,8 +125,7 @@ namespace SharpLoops
                 {
                     _streamer.Add(item);
                 }
-                _waveOutput.WpfPlot1.Refresh();
-
+                OutputPlot.Refresh();
             }));
 
             //_newDataAvailable = false;

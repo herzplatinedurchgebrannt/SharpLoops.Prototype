@@ -42,19 +42,20 @@
             </Menu>
         </DockPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Width="50">
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Width="50" Margin="0,0,150,0">
             <Button x:Name="patternTempoUp" Content="+"/>
             <TextBox x:Name="patternBox" Text="1" Background="Black" Foreground="White" TextAlignment="Center" />
             <Button x:Name="patternTempoDown" Content="-"/>
             <Label x:Name="labelPattern" Content="PATTERN" Foreground="#FF8C8C8C" FontSize="10" HorizontalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right" Width="50">
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Width="50" Margin="0,0,40,0">
             <Button x:Name="buttonTempoUp" Content="+" />
             <TextBox x:Name="tempoBox" Text="120" Background="Black" Foreground="White" KeyDown="OnKeyDownHandler" TextAlignment="Right"/>
             <Button x:Name="buttonTempoDown" Content="-"/>
             <Label x:Name="labelTempo" Content="TEMPO" Foreground="#FF8C8C8C" FontSize="10" HorizontalAlignment="Center"/>
         </StackPanel>
+        <WpfPlot x:Name="OutputPlot" Width ="150" Height="100" Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Right"/>
 
 
 
