@@ -29,14 +29,13 @@ namespace SharpLoops
         private const string PATH_CRASH1 = @"C:\Recording\Samples\Samples2019\LoopLords 80s Drums Vol.1\BOSS DR-220E\DR220A_CRASH.wav";
 
         private float[] _buf = new float[1000];
-        private ScottPlot.Plottable.DataStreamer _streamer;
+        private ScottPlot.Plottable.DataStreamer? _streamer;
         private CachedSound _sound1;
         private CachedSound _sound2;
         private CachedSound _sound3;
         private CachedSound _sound4;
         private Stopwatch _stopwatch;
         private BackgroundWorker _worker;
-        private WaveOutput _waveOutput;
         private System.Timers.Timer _timer;
         private PlayerState _state;
         private bool _newDataAvailable;
@@ -100,8 +99,6 @@ namespace SharpLoops
                     dataBackground: System.Drawing.Color.Black
                 );
 
-
-
                 plt.Title("Output");
                 plt.XLabel("");
                 plt.YLabel("");
@@ -113,22 +110,16 @@ namespace SharpLoops
 
         public void RefreshGraph(Object source, ElapsedEventArgs e)
         {
+            if (_streamer == null) return;
+
             Dispatcher.Invoke(new Action(() =>
             {
-                //waveOutput.WpfPlot1.Plot.Clear();
-                //waveOutput.WpfPlot1.Plot.AddDataStreamer(1000);
-                //waveOutput.WpfPlot1.Plot.AddSignal(f);
-                //waveOutput.WpfPlot1.Plot.
-                // waveOutput.WpfPlot1.Refresh();
-
                 foreach (var item in _buf)
                 {
                     _streamer.Add(item);
                 }
                 OutputPlot.Refresh();
             }));
-
-            //_newDataAvailable = false;
 
             Array.Clear(_buf);
         }
@@ -373,6 +364,62 @@ namespace SharpLoops
             {
                 TempoBpm = Convert.ToInt32(tempoBox.Text);
             }
+        }
+
+
+        private void ChooseSampleClick(object sender, RoutedEventArgs e)
+        {
+            // Configure open file dialog box
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.FileName = "Sample"; // Default file name
+            dialog.DefaultExt = ".wav"; // Default file extension
+            dialog.Filter = "Audio samples (.wav)|*.wav"; // Filter files by extension
+
+            // Show open file dialog box
+            bool? result = dialog.ShowDialog();
+
+            // Process open file dialog box results
+            if (result.HasValue)
+            {
+                // Open document
+                string filename = dialog.FileName;
+
+                var btn = (Button)sender;
+
+                if (btn != null) 
+                { 
+                    string[] split = btn.Name.Split('_');
+
+                    int col = Convert.ToInt32(split[2]);
+
+                    switch (col)
+                    {
+                        case 1:
+                            _sound1 = new CachedSound(@filename);
+                            break;
+                        case 2:
+                            _sound2 = new CachedSound(@filename);
+                            break;
+                        case 3:
+                            _sound3 = new CachedSound(@filename);
+                            break;
+                        case 4:
+                            _sound4 = new CachedSound(@filename);
+                            break;
+
+                        default:
+                            throw new ArgumentException();
+                            
+                    }
+
+                }
+
+
+
+                btn.Content = dialog.SafeFileName;
+            }
+
+
         }
     }
 }
