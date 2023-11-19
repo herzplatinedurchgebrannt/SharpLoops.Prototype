@@ -63,7 +63,6 @@ namespace SharpLoops
             _preset.Pattern.Add(new Pattern(4, 16));
             _preset.Pattern.Add(new Pattern(4, 16));
 
-
             // init values
             PatternPosition = 0;
 
@@ -74,15 +73,6 @@ namespace SharpLoops
             _stopwatch = new Stopwatch();
 
             _state = PlayerState.Stop;
-
-            //// clear the pattern
-            //Pattern = new int[,]
-            //{
-            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-            //};
 
             // cache the drum samples
             _sound1 = new CachedSound(PATH_KICK1);
@@ -289,7 +279,39 @@ namespace SharpLoops
             return true; // lesender Zugriff
         }
 
+        private bool DrawPattern(int pos)
+        {
+            // source: https://mycsharp.de/forum/threads/33113/faq-controls-von-thread-aktualisieren-lassen-control-invoke-dispatcher-invoke
+            if (!this.Dispatcher.CheckAccess())
+            { // Wenn Invoke nötig ist, ...
+              // dann rufen wir die Methode selbst per Invoke auf
 
+                return (bool)this.Dispatcher.Invoke((Func<int, bool>)MarkLocator, pos);
+                // hier ist immer ein return (oder alternativ ein else) erforderlich.
+                // Es verhindert, dass der folgende Code im Worker-Thread ausgeführt wird.
+            }
+            // eigentliche Zugriffe; laufen jetzt auf jeden Fall im GUI-Thread
+            //progressBar.Value = percent; // schreibender Zugriff
+
+            for (int i = 0; i < TotalTracks; i++)
+            {
+                for (int j = 0; j < TotalSteps; j++)
+                {
+                    Button lbl = j >= 10 ? (Button)this.FindName("button_0" + i + "_" + j) : (Button)this.FindName("button_0" + i + "_0" + j);
+
+                    if (_preset.Pattern[_activePattern].Grid[i, j] > 0)
+                    {
+                        lbl.Background = new SolidColorBrush(Colors.DarkRed);
+                    }
+                    else
+                    {
+                        lbl.Background = new SolidColorBrush(Colors.LightGray);
+                    }
+                }
+            }
+
+            return true; // lesender Zugriff
+        }
 
 
 
@@ -486,6 +508,8 @@ namespace SharpLoops
                         Button target = (Button)this.FindName("btn_pattern_0" + _activePattern);
                         target.Background = new SolidColorBrush(Colors.DarkRed);
 
+                        DrawPattern(0);
+
                         patternBox.Text = _activePattern.ToString();
                         break;
                     case "dynamic":
@@ -539,6 +563,8 @@ namespace SharpLoops
 
                 patternBox.Text = num.ToString();
                 _activePattern = Convert.ToInt32(num);
+
+                DrawPattern(0);
 
                 Debug.WriteLine("active pattern: " + _activePattern);
 
