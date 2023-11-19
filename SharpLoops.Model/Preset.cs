@@ -8,6 +8,8 @@ namespace SharpLoops.Model
 {
     public class Preset
     {
+        private int _activePattern;
+
         public Preset() 
         {
             Pattern = new List<Pattern>();
@@ -15,5 +17,6 @@ namespace SharpLoops.Model
         }
         public List<Pattern> Pattern { get; set; }
         public string Path { get; set; }
+
     }
 }

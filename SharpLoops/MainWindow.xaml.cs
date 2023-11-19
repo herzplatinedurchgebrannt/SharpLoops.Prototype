@@ -39,11 +39,18 @@ namespace SharpLoops
         private System.Timers.Timer _timer;
         private PlayerState _state;
         private bool _newDataAvailable;
+        private int _dynamicValue;
+        private int _tempoBPM;
+        private int _activePattern;
 
         public MainWindow()
         {
             // init values
             PatternPosition = 0;
+
+            _activePattern = 1;
+            _dynamicValue = 127;
+            TempoBPM = 120;
 
             _stopwatch = new Stopwatch();
 
@@ -51,11 +58,11 @@ namespace SharpLoops
 
             // clear the pattern
             Pattern = new int[,]
-            { 
+            {
                 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
                 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
                 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } 
+                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
             };
 
             // cache the drum samples
@@ -66,7 +73,7 @@ namespace SharpLoops
 
             _worker = new BackgroundWorker();
 
-            TempoBpm = 120;
+            TempoBPM = 120;
 
             InitializeComponent();
 
@@ -89,8 +96,8 @@ namespace SharpLoops
         {
             Dispatcher.Invoke(new Action(() =>
             {
+                // output wave plot
                 var plt = OutputPlot.Plot;
-
 
                 plt.SetAxisLimitsY(-2, 2);
                 _streamer = plt.AddDataStreamer(1000);
@@ -98,12 +105,17 @@ namespace SharpLoops
                     figureBackground: System.Drawing.Color.Black,
                     dataBackground: System.Drawing.Color.Black
                 );
-
                 plt.Title("Output");
                 plt.XLabel("");
                 plt.YLabel("");
                 plt.Render();
-       
+
+                // init button states
+                dynamicBox.Text = _dynamicValue.ToString();
+                tempoBox.Text = TempoBPM.ToString();
+                patternBox.Text = _activePattern.ToString();
+
+                btn_pattern_01.Background = new SolidColorBrush(Colors.DarkRed);
             }));
         }
 
@@ -133,21 +145,21 @@ namespace SharpLoops
         }
 
 
-        public int[,] Pattern 
-        { 
-            get; 
-            set; 
+        public int[,] Pattern
+        {
+            get;
+            set;
         }
-        public int PatternPosition 
-        { 
-            get; 
-            private set; 
-        }
-
-        public int TempoBpm
+        public int PatternPosition
         {
             get;
             private set;
+        }
+
+        public int TempoBPM
+        {
+            get => _tempoBPM;
+            private set => _tempoBPM = value;
         }
 
         /// <summary>
@@ -172,11 +184,12 @@ namespace SharpLoops
             // source: https://wpf-tutorial.com/de/97/sonstiges-miscellaneous/multithreading-mit-dem-backgroundworker/
             _stopwatch.Start();
 
-            while(_state == PlayerState.Playing)
+            while (_state == PlayerState.Playing)
             {
-
-                if (_stopwatch.ElapsedMilliseconds >= 200) 
+                if (_stopwatch.ElapsedMilliseconds >= 60000 / _tempoBPM / 2)
                 {
+                    Debug.WriteLine(60000 / _tempoBPM / 2);     // 1/8 notes
+
                     if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
                     if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
                     if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
@@ -192,20 +205,13 @@ namespace SharpLoops
                     {
                         PatternPosition = 0;
                     }
-
-                    //Debug.WriteLine(_stopwatch.ElapsedTicks);
-
                     _stopwatch.Restart();
                 }
-
-
             }
         }
 
 
 
-
-        
         private bool MarkLocator(int pos)
         {
             // source: https://mycsharp.de/forum/threads/33113/faq-controls-von-thread-aktualisieren-lassen-control-invoke-dispatcher-invoke
@@ -286,7 +292,7 @@ namespace SharpLoops
                 // toggle the value
                 if (Pattern[row, col] == 0)
                 {
-                    Pattern[row, col] = 127;
+                    Pattern[row, col] = _dynamicValue;
                     btn.Background = new SolidColorBrush(Colors.Red);
                 }
                 else
@@ -308,7 +314,7 @@ namespace SharpLoops
 
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_state != PlayerState.Playing) 
+            if (_state != PlayerState.Playing)
             {
                 _state = PlayerState.Playing;
 
@@ -362,7 +368,7 @@ namespace SharpLoops
         {
             if (e.Key == Key.Enter)
             {
-                TempoBpm = Convert.ToInt32(tempoBox.Text);
+                TempoBPM = Convert.ToInt32(tempoBox.Text);
             }
         }
 
@@ -386,8 +392,8 @@ namespace SharpLoops
 
                 var btn = (Button)sender;
 
-                if (btn != null) 
-                { 
+                if (btn != null)
+                {
                     string[] split = btn.Name.Split('_');
 
                     int col = Convert.ToInt32(split[2]);
@@ -409,7 +415,7 @@ namespace SharpLoops
 
                         default:
                             throw new ArgumentException();
-                            
+
                     }
 
                 }
@@ -420,6 +426,107 @@ namespace SharpLoops
             }
 
 
+        }
+
+        private void dynamicBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            _dynamicValue = Convert.ToInt32(dynamicBox.Text);
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void buttonChangeValue_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = (Button)sender;
+
+            if (btn != null)
+            {
+                string[] split = btn.Name.Split('_');
+
+                string prop = split[1];
+                string val = split[2];
+
+                switch (prop)
+                {
+                    case "pattern":
+
+                        int oldPattern = _activePattern;
+
+                        if (val == "inc")
+                        {
+                            if (_activePattern != 9) _activePattern++;
+                            else _activePattern = 1;
+                        }
+                        else
+                        {
+                            if (_activePattern != 1) _activePattern--;
+                            else _activePattern = 9;
+                        }
+
+                        Button released = (Button)this.FindName("btn_pattern_0" + oldPattern);
+                        released.Background = new SolidColorBrush(Colors.Black);
+
+                        Button target = (Button)this.FindName("btn_pattern_0" + _activePattern);
+                        target.Background = new SolidColorBrush(Colors.DarkRed);
+
+                        patternBox.Text = _activePattern.ToString();
+                        break;
+                    case "dynamic":
+                        if (val == "inc")
+                        {
+                            if (_dynamicValue < 127) _dynamicValue++;
+                        }
+                        else
+                        {
+                            if (_dynamicValue > 0) _dynamicValue--;
+                        }
+
+                        dynamicBox.Text = _dynamicValue.ToString();
+                        break;
+                    case "tempo":
+                        if (val == "inc")
+                        {
+                            if (TempoBPM < 200) TempoBPM++;
+                        }
+                        else
+                        {
+                            if (TempoBPM > 0) TempoBPM--;
+                        }
+
+                        tempoBox.Text = TempoBPM.ToString();
+                        break;
+                    default:
+                        throw new ArgumentException();
+
+                }
+            }
+        }
+
+        private void changePattern_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = (Button)sender;
+
+            if (btn != null)
+            {
+                int oldPattern = _activePattern;
+
+                string[] split = btn.Name.Split('_');
+
+                int num = Convert.ToInt32(split[2]);
+
+                Button released = (Button)this.FindName("btn_pattern_0" + _activePattern);
+                released.Background = new SolidColorBrush(Colors.Black);
+
+                Button target = (Button)this.FindName("btn_pattern_0" + num);
+                target.Background = new SolidColorBrush(Colors.DarkRed);
+
+                patternBox.Text = num.ToString();
+                _activePattern = Convert.ToInt32(num);
+
+            }
         }
     }
 }
