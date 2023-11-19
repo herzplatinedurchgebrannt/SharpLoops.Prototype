@@ -12,6 +12,9 @@ using NAudio.Gui;
 using ScottPlot;
 using SharpLoops.Audio;
 using System.Windows.Media;
+using NAudio.SoundFont;
+using SharpLoops.Model;
+using NAudio.MediaFoundation;
 
 namespace SharpLoops
 {
@@ -42,9 +45,25 @@ namespace SharpLoops
         private int _dynamicValue;
         private int _tempoBPM;
         private int _activePattern;
+        private SharpLoops.Model.Preset _preset;
+
 
         public MainWindow()
         {
+            // init preset & pattern stuff
+            _preset = new Model.Preset();
+
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add(new Pattern(4, 16));
+
+
             // init values
             PatternPosition = 0;
 
@@ -56,14 +75,14 @@ namespace SharpLoops
 
             _state = PlayerState.Stop;
 
-            // clear the pattern
-            Pattern = new int[,]
-            {
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-            };
+            //// clear the pattern
+            //Pattern = new int[,]
+            //{
+            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+            //    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+            //};
 
             // cache the drum samples
             _sound1 = new CachedSound(PATH_KICK1);
@@ -145,11 +164,11 @@ namespace SharpLoops
         }
 
 
-        public int[,] Pattern
-        {
-            get;
-            set;
-        }
+        //public int[,] Pattern
+        //{
+        //    get;
+        //    set;
+        //}
         public int PatternPosition
         {
             get;
@@ -167,7 +186,7 @@ namespace SharpLoops
         /// </summary>
         public int TotalTracks
         {
-            get { return Pattern.GetLength(0); }
+            get { return _preset.Pattern[_activePattern].Grid.GetLength(0); }
         }
 
         /// <summary>
@@ -175,7 +194,7 @@ namespace SharpLoops
         /// </summary>
         public int TotalSteps
         {
-            get { return Pattern.GetLength(1); }
+            get { return _preset.Pattern[_activePattern].Grid.GetLength(1); }
         }
 
 
@@ -186,14 +205,15 @@ namespace SharpLoops
 
             while (_state == PlayerState.Playing)
             {
-                if (_stopwatch.ElapsedMilliseconds >= 60000 / _tempoBPM / 2)
+                if (_stopwatch.ElapsedMilliseconds >= 60000 / _tempoBPM / 2) // 1/8 notes
                 {
-                    Debug.WriteLine(60000 / _tempoBPM / 2);     // 1/8 notes
+                    //Debug.WriteLine(60000 / _tempoBPM / 2);     
+                    Debug.WriteLine("AW: " + _activePattern);
 
-                    if (Pattern[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
-                    if (Pattern[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
-                    if (Pattern[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
-                    if (Pattern[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+                    if (_preset.Pattern[_activePattern].Grid[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
+                    if (_preset.Pattern[_activePattern].Grid[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
+                    if (_preset.Pattern[_activePattern].Grid[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
+                    if (_preset.Pattern[_activePattern].Grid[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
 
                     MarkLocator(PatternPosition); // this must be done somewhere else. 
 
@@ -290,14 +310,14 @@ namespace SharpLoops
                 int col = Convert.ToInt32(split[2]);
 
                 // toggle the value
-                if (Pattern[row, col] == 0)
+                if (_preset.Pattern[_activePattern].Grid[row, col] == 0)
                 {
-                    Pattern[row, col] = _dynamicValue;
+                    _preset.Pattern[_activePattern].Grid[row, col] = _dynamicValue;
                     btn.Background = new SolidColorBrush(Colors.Red);
                 }
                 else
                 {
-                    Pattern[row, col] = 0;
+                    _preset.Pattern[_activePattern].Grid[row, col] = 0;
                     btn.Background = new SolidColorBrush(Colors.White);
                 }
             }
@@ -348,13 +368,7 @@ namespace SharpLoops
         {
             // issue: reset button color
 
-            Pattern = new int[,]
-            {
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-            };
+            _preset.Pattern[_activePattern] = new Pattern(4, 16);
 
             ClearButtonState(0);
 
@@ -525,6 +539,8 @@ namespace SharpLoops
 
                 patternBox.Text = num.ToString();
                 _activePattern = Convert.ToInt32(num);
+
+                Debug.WriteLine("active pattern: " + _activePattern);
 
             }
         }

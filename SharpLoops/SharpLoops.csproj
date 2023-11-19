@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpLoops.Audio\SharpLoops.Audio.csproj" />
+    <ProjectReference Include="..\SharpLoops.Model\SharpLoops.Model.csproj" />
   </ItemGroup>
 
 </Project>
