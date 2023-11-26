@@ -22,8 +22,10 @@ namespace SharpLoops.Audio
 
         public AudioPlaybackEngine(int sampleRate = 44100, int channelCount = 2)
         {
-            outputDevice = new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Exclusive, 15);
-            //outputDevice = new AsioOut(1);
+            //outputDevice = new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Exclusive, 15);
+            outputDevice = new AsioOut(5);
+
+
 
             mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channelCount));
             mixer.ReadFully = true;

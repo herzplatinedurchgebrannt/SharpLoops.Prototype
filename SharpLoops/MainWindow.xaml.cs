@@ -41,7 +41,7 @@ namespace SharpLoops
         private int _activePattern;
         private SharpLoops.Model.Preset _preset;
 
-        AudioPlaybackEngine engine = new AudioPlaybackEngine();
+        AudioPlaybackEngine engine;
 
         public MainWindow()
         {
@@ -89,7 +89,9 @@ namespace SharpLoops
             _timer.Enabled = true;
             _newDataAvailable = false;
 
-            AudioPlaybackEngine.Instance.PlottDataAvailable += UpdateGraphData!;
+
+            engine = new AudioPlaybackEngine();
+            engine.PlottDataAvailable += UpdateGraphData!;
 
             InitializeComponent();
             InitWaveWindow();
@@ -185,10 +187,10 @@ namespace SharpLoops
                     //Debug.WriteLine(60000 / _tempoBPM / 2);     
                     Debug.WriteLine("AW: " + _activePattern);
 
-                    if (_preset.Pattern[_activePattern].Grid[0, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound1);
-                    if (_preset.Pattern[_activePattern].Grid[1, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound2);
-                    if (_preset.Pattern[_activePattern].Grid[2, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound3);
-                    if (_preset.Pattern[_activePattern].Grid[3, PatternPosition] != 0) AudioPlaybackEngine.Instance.PlaySound(_sound4);
+                    if (_preset.Pattern[_activePattern].Grid[0, PatternPosition] != 0) engine.PlaySound(_sound1);
+                    if (_preset.Pattern[_activePattern].Grid[1, PatternPosition] != 0) engine.PlaySound(_sound2);
+                    if (_preset.Pattern[_activePattern].Grid[2, PatternPosition] != 0) engine.PlaySound(_sound3);
+                    if (_preset.Pattern[_activePattern].Grid[3, PatternPosition] != 0) engine.PlaySound(_sound4);
 
                     MarkLocator(PatternPosition); // this must be done somewhere else. 
 
