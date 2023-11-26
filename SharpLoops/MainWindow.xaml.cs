@@ -1,20 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Security.Policy;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Drawing;
-using NAudio.Gui;
-using ScottPlot;
 using SharpLoops.Audio;
 using System.Windows.Media;
-using NAudio.SoundFont;
 using SharpLoops.Model;
-using NAudio.MediaFoundation;
+using System.Media;
 
 namespace SharpLoops
 {
@@ -47,28 +41,33 @@ namespace SharpLoops
         private int _activePattern;
         private SharpLoops.Model.Preset _preset;
 
+        AudioPlaybackEngine engine = new AudioPlaybackEngine();
 
         public MainWindow()
         {
             // init preset & pattern stuff
             _preset = new Model.Preset();
 
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
-            _preset.Pattern.Add(new Pattern(4, 16));
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
+            _preset.Pattern.Add( new Pattern(4, 16) { Sounds = new Sound[4] { new Sound(1, PATH_KICK1, "Kick"), new Sound(2, PATH_SNARE1, "Snare"), new Sound(3, PATH_HAT1, "Hihat"), new Sound(4, PATH_CRASH1, "Crash") } });
 
             // init values
+            _activePattern = 0;
             PatternPosition = 0;
-
-            _activePattern = 1;
             _dynamicValue = 127;
             TempoBPM = 120;
+
+            _sound1 = new CachedSound(_preset.Pattern[_activePattern].Sounds[0].SamplePath);
+            _sound2 = new CachedSound(_preset.Pattern[_activePattern].Sounds[1].SamplePath);
+            _sound3 = new CachedSound(_preset.Pattern[_activePattern].Sounds[2].SamplePath);
+            _sound4 = new CachedSound(_preset.Pattern[_activePattern].Sounds[3].SamplePath);
 
             _stopwatch = new Stopwatch();
 
@@ -84,21 +83,16 @@ namespace SharpLoops
 
             TempoBPM = 120;
 
-            InitializeComponent();
-
-            //_waveOutput = new WaveOutput();
-            //_waveOutput.Show();
-
             _timer = new System.Timers.Timer(50);
             _timer.Elapsed += RefreshGraph!;
             _timer.AutoReset = true;
             _timer.Enabled = true;
             _newDataAvailable = false;
 
-            InitWaveWindow();
-
             AudioPlaybackEngine.Instance.PlottDataAvailable += UpdateGraphData!;
 
+            InitializeComponent();
+            InitWaveWindow();
         }
 
         public void InitWaveWindow()
@@ -112,9 +106,8 @@ namespace SharpLoops
                 _streamer = plt.AddDataStreamer(1000);
                 plt.Style(
                     figureBackground: System.Drawing.Color.Black,
-                    dataBackground: System.Drawing.Color.Black
-                );
-                plt.Title("Output");
+                    dataBackground: System.Drawing.Color.Black);
+                plt.Title("");
                 plt.XLabel("");
                 plt.YLabel("");
                 plt.Render();
@@ -124,7 +117,7 @@ namespace SharpLoops
                 tempoBox.Text = TempoBPM.ToString();
                 patternBox.Text = _activePattern.ToString();
 
-                btn_pattern_01.Background = new SolidColorBrush(Colors.DarkRed);
+                btn_pattern_00.Background = new SolidColorBrush(Colors.DarkRed);
             }));
         }
 
@@ -145,7 +138,6 @@ namespace SharpLoops
             Array.Clear(_buf);
         }
 
-
         public void UpdateGraphData(Object sender, float[] f)
         {
             _buf = f;
@@ -153,12 +145,6 @@ namespace SharpLoops
             //_newDataAvailable = true;
         }
 
-
-        //public int[,] Pattern
-        //{
-        //    get;
-        //    set;
-        //}
         public int PatternPosition
         {
             get;
@@ -186,7 +172,6 @@ namespace SharpLoops
         {
             get { return _preset.Pattern[_activePattern].Grid.GetLength(1); }
         }
-
 
         private void AudioWorker(object sender, DoWorkEventArgs e)
         {
@@ -219,8 +204,6 @@ namespace SharpLoops
                 }
             }
         }
-
-
 
         private bool MarkLocator(int pos)
         {
@@ -313,14 +296,10 @@ namespace SharpLoops
             return true; // lesender Zugriff
         }
 
-
-
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             double[] dataX = new double[] { 1, 2, 3, 4, 5 };
             double[] dataY = new double[] { 1, 4, 9, 16, 25 };
-
-
 
             Button btn = (Button)sender;
 
@@ -353,7 +332,6 @@ namespace SharpLoops
             #endregion
         }
 
-
         private void PlayButtonClick(object sender, RoutedEventArgs e)
         {
             if (_state != PlayerState.Playing)
@@ -368,21 +346,11 @@ namespace SharpLoops
             {
                 _state = PlayerState.Pause;
             }
-
-
-
-
-            //Button b = (Button)this.FindName("buttonStop");
-
-            //b.Background = new SolidColorBrush(Colors.White);
         }
 
         private void StopButtonClick(object sender, RoutedEventArgs e)
         {
-            // issue: does not start at pos 1 again
-
             _state = PlayerState.Stop;
-
             PatternPosition = 0;
         }
 
@@ -391,14 +359,8 @@ namespace SharpLoops
             // issue: reset button color
 
             _preset.Pattern[_activePattern] = new Pattern(4, 16);
-
             ClearButtonState(0);
-
-            //Button b = (Button)this.FindName("buttonStop");
-
-            //b.Background = new SolidColorBrush(Colors.White);
         }
-
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e)
         {
@@ -407,7 +369,6 @@ namespace SharpLoops
                 TempoBPM = Convert.ToInt32(tempoBox.Text);
             }
         }
-
 
         private void ChooseSampleClick(object sender, RoutedEventArgs e)
         {
@@ -436,32 +397,34 @@ namespace SharpLoops
 
                     switch (col)
                     {
-                        case 1:
+                        case 0:
+                            _preset.Pattern[_activePattern].Sounds[0].SamplePath = @filename;
+                            _preset.Pattern[_activePattern].Sounds[0].SampleName = dialog.SafeFileName;
                             _sound1 = new CachedSound(@filename);
                             break;
-                        case 2:
+                        case 1:
+                            _preset.Pattern[_activePattern].Sounds[1].SamplePath = @filename;
+                            _preset.Pattern[_activePattern].Sounds[1].SampleName = dialog.SafeFileName;
                             _sound2 = new CachedSound(@filename);
                             break;
-                        case 3:
+                        case 2:
+                            _preset.Pattern[_activePattern].Sounds[2].SamplePath = @filename;
+                            _preset.Pattern[_activePattern].Sounds[2].SampleName = dialog.SafeFileName;
                             _sound3 = new CachedSound(@filename);
                             break;
-                        case 4:
+                        case 3:
+                            _preset.Pattern[_activePattern].Sounds[3].SamplePath = @filename;
+                            _preset.Pattern[_activePattern].Sounds[3].SampleName = dialog.SafeFileName;
                             _sound4 = new CachedSound(@filename);
                             break;
 
                         default:
                             throw new ArgumentException();
-
                     }
 
+                    btn.Content = dialog.SafeFileName;
                 }
-
-
-
-                btn.Content = dialog.SafeFileName;
-            }
-
-
+            }  
         }
 
         private void dynamicBox_KeyDown(object sender, KeyEventArgs e)
@@ -493,14 +456,24 @@ namespace SharpLoops
 
                         if (val == "inc")
                         {
-                            if (_activePattern != 9) _activePattern++;
-                            else _activePattern = 1;
+                            if (_activePattern != 8) _activePattern++;
+                            else _activePattern = 0;
                         }
                         else
                         {
-                            if (_activePattern != 1) _activePattern--;
-                            else _activePattern = 9;
+                            if (_activePattern != 0) _activePattern--;
+                            else _activePattern = 8;
                         }
+
+                        _sound1 = new CachedSound(_preset.Pattern[_activePattern].Sounds[0].SamplePath);
+                        _sound2 = new CachedSound(_preset.Pattern[_activePattern].Sounds[1].SamplePath);
+                        _sound3 = new CachedSound(_preset.Pattern[_activePattern].Sounds[2].SamplePath);
+                        _sound4 = new CachedSound(_preset.Pattern[_activePattern].Sounds[3].SamplePath);
+
+                        btn_SampleDialog_00.Content = _preset.Pattern[_activePattern].Sounds[0].SamplePath;
+                        btn_SampleDialog_01.Content = _preset.Pattern[_activePattern].Sounds[1].SamplePath;
+                        btn_SampleDialog_02.Content = _preset.Pattern[_activePattern].Sounds[2].SamplePath;
+                        btn_SampleDialog_03.Content = _preset.Pattern[_activePattern].Sounds[3].SamplePath;
 
                         Button released = (Button)this.FindName("btn_pattern_0" + oldPattern);
                         released.Background = new SolidColorBrush(Colors.Black);
@@ -512,7 +485,9 @@ namespace SharpLoops
 
                         patternBox.Text = _activePattern.ToString();
                         break;
+
                     case "dynamic":
+
                         if (val == "inc")
                         {
                             if (_dynamicValue < 127) _dynamicValue++;
@@ -524,7 +499,9 @@ namespace SharpLoops
 
                         dynamicBox.Text = _dynamicValue.ToString();
                         break;
+
                     case "tempo":
+
                         if (val == "inc")
                         {
                             if (TempoBPM < 200) TempoBPM++;
@@ -536,9 +513,9 @@ namespace SharpLoops
 
                         tempoBox.Text = TempoBPM.ToString();
                         break;
+
                     default:
                         throw new ArgumentException();
-
                 }
             }
         }
@@ -563,6 +540,16 @@ namespace SharpLoops
 
                 patternBox.Text = num.ToString();
                 _activePattern = Convert.ToInt32(num);
+
+                _sound1 = new CachedSound(_preset.Pattern[_activePattern].Sounds[0].SamplePath);
+                _sound2 = new CachedSound(_preset.Pattern[_activePattern].Sounds[1].SamplePath);
+                _sound3 = new CachedSound(_preset.Pattern[_activePattern].Sounds[2].SamplePath);
+                _sound4 = new CachedSound(_preset.Pattern[_activePattern].Sounds[3].SamplePath);
+
+                btn_SampleDialog_00.Content = _preset.Pattern[_activePattern].Sounds[0].SamplePath;
+                btn_SampleDialog_01.Content = _preset.Pattern[_activePattern].Sounds[1].SamplePath;
+                btn_SampleDialog_02.Content = _preset.Pattern[_activePattern].Sounds[2].SamplePath;
+                btn_SampleDialog_03.Content = _preset.Pattern[_activePattern].Sounds[3].SamplePath;
 
                 DrawPattern(0);
 

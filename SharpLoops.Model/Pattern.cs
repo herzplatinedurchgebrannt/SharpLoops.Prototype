@@ -14,7 +14,7 @@
         public int Steps { get; private set; }
         public int Tempo { get; private set; }
 
-        internal Sound[] Sounds { get; private set; }
+        public Sound[] Sounds { get; set; }
 
         public int[,] Grid
         {

@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 
 namespace SharpLoops.Model
 {
-    internal class Sound
+    public class Sound
     {
-        internal int ChannelId { get; set; }
-        internal string SamplePath { get; set; }
+        public Sound(int channelId, string samplePath, string sampleName)
+        {
+            ChannelId = channelId;
+            SamplePath = samplePath;
+            SampleName = sampleName;
+        }
+
+        public int ChannelId { get; set; }
+        public string SamplePath { get; set; }
+        public string SampleName { get; set; }
+
+
     }
 }
