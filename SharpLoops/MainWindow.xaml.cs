@@ -9,6 +9,7 @@ using SharpLoops.Audio;
 using System.Windows.Media;
 using SharpLoops.Model;
 using System.Media;
+using SharpLoops.Audio.BASS;
 
 namespace SharpLoops
 {
@@ -92,6 +93,8 @@ namespace SharpLoops
 
             engine = new AudioPlaybackEngine();
             engine.PlottDataAvailable += UpdateGraphData!;
+
+            BassTest.PlayTest();
 
             InitializeComponent();
             InitWaveWindow();

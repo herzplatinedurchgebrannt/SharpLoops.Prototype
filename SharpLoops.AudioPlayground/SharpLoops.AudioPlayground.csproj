@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpLoops.Audio\SharpLoops.Audio.csproj" />
+    <ProjectReference Include="..\SharpLoops.Audio\SharpLoops.Audio.NAudio.csproj" />
   </ItemGroup>
 
 </Project>

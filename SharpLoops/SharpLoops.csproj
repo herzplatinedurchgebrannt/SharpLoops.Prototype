@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpLoops.Audio\SharpLoops.Audio.csproj" />
+    <ProjectReference Include="..\SharpLoops.Audio.BASS\SharpLoops.Audio.BASS.csproj" />
+    <ProjectReference Include="..\SharpLoops.Audio\SharpLoops.Audio.NAudio.csproj" />
     <ProjectReference Include="..\SharpLoops.Model\SharpLoops.Model.csproj" />
   </ItemGroup>
 
